@@ -1,0 +1,25 @@
+{
+  "laterite_resistivity_ohm_m": 80.0,
+  "saprolite_resistivity_ohm_m": 200.0,
+  "basement_resistivity_ohm_m": 1000.0,
+  "target_resistivity_ohm_m": 10.0,
+
+  "laterite_thickness_m": 15.0,
+  "saprolite_thickness_m": 30.0,
+
+  "target_top_depth_m": 100.0,
+  "target_width_m": 80.0,
+  "target_height_m": 40.0,
+
+  "target_conductivity_s_m": 0.1,
+  "laterite_conductivity_s_m": 0.0125,
+  "saprolite_conductivity_s_m": 0.005,
+  "basement_conductivity_s_m": 0.001,
+
+  "target_chargeability": 0.15,
+
+  "model_width_m": 2000.0,
+  "model_depth_m": 500.0,
+  "surface_cell_size_m": 5.0,
+  "deep_cell_size_m": 20.0
+}
