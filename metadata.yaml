@@ -1,0 +1,17 @@
+title: "Численное моделирование геоэлектрических методов для разведки тропических полезных ископаемых"
+author: "Буну Гимкинг Ариэль"
+date: \today
+lang: ru-RU
+documentclass: article
+mainfont: Times New Roman
+monofont: Courier New
+header-includes: |
+  \renewcommand{\labelitemi}{---}
+  \renewcommand{\labelitemii}{---}
+  \renewcommand{\labelitemiii}{---}
+  \renewcommand{\labelitemiv}{---}
+  \usepackage{setspace}
+  \onehalfspacing
+  \setmainfont{Times New Roman}
+  \usepackage{geometry} 
+  \geometry{left=30mm, right=15mm, top=20mm, bottom=20mm}

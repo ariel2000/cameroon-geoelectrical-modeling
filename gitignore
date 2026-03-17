@@ -1,0 +1,31 @@
+# Вспомогательные файлы LaTeX
+*.aux
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.toc
+*.lof
+*.lot
+*.out
+*.nav
+*.snm
+*.idx
+*.ilg
+*.ind
+*.synctex.gz
+*.synctex
+*.fls
+*.log
+
+# Файлы latexmk
+*.fdb_latexmk
+*.latexmk
+
+# Итоговый PDF
+*.pdf
+
+# Временные файлы редакторов
+*.swp
+*.tmp
+*~
