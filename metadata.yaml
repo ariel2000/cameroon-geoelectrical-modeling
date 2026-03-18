@@ -2,9 +2,19 @@ title: "Численное моделирование геоэлектричес
 author: "Буну Гимкинг Ариэль"
 date: \today
 lang: ru-RU
-documentclass: article
+# documentclass: book
+documentclass: book
+classoption:
+  - a4paper
+  - 12pt
 mainfont: Times New Roman
 monofont: Courier New
+
+# Управление оглавлением
+toc: true                      # Включить оглавление (аналог --toc)
+toc-depth: 3                    # Глубина оглавления (уровни заголовков 1,2,3)
+toc-title: "Содержание"         # Заголовок оглавления (по умолчанию "Table of Contents")
+
 header-includes: |
   \renewcommand{\labelitemi}{---}
   \renewcommand{\labelitemii}{---}
