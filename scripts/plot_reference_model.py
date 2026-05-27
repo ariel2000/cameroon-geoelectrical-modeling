@@ -11,11 +11,11 @@ sigma = conductivity_2d(X, Z)
 rho = 1.0 / sigma
 
 plt.figure(figsize=(9, 4.8))
-im = plt.pcolormesh(X, -Z, rho, shading="auto")
+im = plt.pcolormesh(X, Z, rho, shading="auto")
 cb = plt.colorbar(im)
 cb.set_label("Resistivity (Ohm·m)")
 plt.xlabel("Distance (m)")
-plt.ylabel("Depth (m)")
+plt.ylabel("Elevation / Depth (m)")
 plt.title("Synthetic geoelectrical reference model")
 plt.tight_layout()
 plt.savefig("outputs/reference_model.png", dpi=200)
