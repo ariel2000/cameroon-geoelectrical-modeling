@@ -15,7 +15,7 @@ times = np.logspace(-5, -2, 31)
 
 # 3. Receiver and source
 receiver = tdem.receivers.PointMagneticFluxTimeDerivative(
-    locations=np.array([[0.0, 0.0, 30.0]]),
+    locations=np.array([[0.0, 0.0, 0.0]]),
     times=times,
     orientation="z",
 )
@@ -23,7 +23,7 @@ receiver = tdem.receivers.PointMagneticFluxTimeDerivative(
 waveform = tdem.sources.StepOffWaveform()
 source = tdem.sources.CircularLoop(
     receiver_list=[receiver],
-    location=np.array([0.0, 0.0, 30.0]),
+    location=np.array([0.0, 0.0, 0.0]),
     radius=50.0,
     current=1.0,
     waveform=waveform,
