@@ -1,7 +1,7 @@
 from __future__ import annotations
 import numpy as np
 import matplotlib.pyplot as plt
-from common_model import conductivity_2d, DOMAIN_WIDTH, DOMAIN_DEPTH
+from common_model import conductivity_2d, DOMAIN_WIDTH, DOMAIN_DEPTH, OUTPUT_DIR
 
 x = np.linspace(-DOMAIN_WIDTH / 2, DOMAIN_WIDTH / 2, 400)
 z = np.linspace(-DOMAIN_DEPTH, 0, 200)
@@ -18,5 +18,7 @@ plt.xlabel("Distance (m)")
 plt.ylabel("Elevation / Depth (m)")
 plt.title("Synthetic geoelectrical reference model")
 plt.tight_layout()
-plt.savefig("outputs/reference_model.png", dpi=200)
-print("Saved outputs/reference_model.png")
+output = OUTPUT_DIR / "reference_model.png"
+plt.savefig(output, dpi=200)
+plt.close()
+print(f"Saved {output}")

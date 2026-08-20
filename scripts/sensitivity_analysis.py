@@ -30,6 +30,7 @@ import matplotlib.pyplot as plt
 from discretize import TreeMesh
 from discretize.utils import active_from_xyz
 from simpeg import maps
+from simpeg.utils import get_default_solver
 from simpeg.electromagnetics.static import resistivity as dc
 from simpeg.electromagnetics.static import induced_polarization as ip
 from simpeg.electromagnetics.static.utils.static_utils import (
@@ -38,12 +39,14 @@ from simpeg.electromagnetics.static.utils.static_utils import (
 )
 from simpeg.electromagnetics import time_domain as tdem
 
+from common_model import tree_mesh_shape
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs"
 OUT.mkdir(exist_ok=True)
 
-PARAM_FILE = ROOT / "model_parameters.json"
+PARAM_FILE = Path(__file__).resolve().with_name("model_parameters.json")
 with open(PARAM_FILE, "r", encoding="utf-8") as f:
     BASE = json.load(f)
 
@@ -73,7 +76,9 @@ SURFACE_CELL_SIZE = get_value("surface_cell_size_m", 10.0)
 # -----------------------------------------------------------------------------
 
 def conductivity_2d_variant(x, z, laterite_thickness, laterite_resistivity,
-                            target_top, target_width, target_height):
+                            target_top, target_width, target_height,
+                            target_resistivity=BASE_RHO_TARGET,
+                            include_target=True):
     """Conductivity model for DC/IP sensitivity tests.
 
     Surface: z = 0 m.
@@ -82,7 +87,7 @@ def conductivity_2d_variant(x, z, laterite_thickness, laterite_resistivity,
     sigma_laterite = 1.0 / laterite_resistivity
     sigma_saprolite = 1.0 / BASE_RHO_SAPROLITE
     sigma_basement = 1.0 / BASE_RHO_BASEMENT
-    sigma_target = 1.0 / BASE_RHO_TARGET
+    sigma_target = 1.0 / float(target_resistivity)
 
     sigma = np.full_like(x, sigma_basement, dtype=float)
 
@@ -98,12 +103,14 @@ def conductivity_2d_variant(x, z, laterite_thickness, laterite_resistivity,
     z2 = -(target_top + target_height)
 
     target = (x >= x1) & (x <= x2) & (z <= z1) & (z >= z2)
-    sigma[target] = sigma_target
+    if include_target:
+        sigma[target] = sigma_target
 
     return sigma
 
 
-def chargeability_2d_variant(x, z, target_top, target_width, target_height):
+def chargeability_2d_variant(x, z, target_top, target_width, target_height,
+                             include_target=True):
     eta = np.zeros_like(x, dtype=float)
 
     x1 = -target_width / 2.0
@@ -112,12 +119,13 @@ def chargeability_2d_variant(x, z, target_top, target_width, target_height):
     z2 = -(target_top + target_height)
 
     target = (x >= x1) & (x <= x2) & (z <= z1) & (z >= z2)
-    eta[target] = BASE_CHARGEABILITY
+    if include_target:
+        eta[target] = BASE_CHARGEABILITY
 
     return eta
 
 
-def build_dc_ip_mesh_and_surveys():
+def build_dc_ip_mesh_and_surveys(cell_size=SURFACE_CELL_SIZE):
     topo_x = np.linspace(-DOMAIN_WIDTH / 2.0, DOMAIN_WIDTH / 2.0, 401)
     topo_xyz = np.c_[topo_x, np.zeros_like(topo_x)]
 
@@ -134,8 +142,11 @@ def build_dc_ip_mesh_and_surveys():
     dc_survey = dc.survey.Survey(source_list)
     ip_survey = ip.survey.from_dc_to_ip_survey(dc_survey)
 
-    dh = SURFACE_CELL_SIZE
-    mesh = TreeMesh([[(dh, 256)], [(dh, 128)]], x0="CN")
+    dh = float(cell_size)
+    nx, nz = tree_mesh_shape(dh)
+    mesh = TreeMesh(
+        [[(dh, nx)], [(dh, nz)]], x0="CN", diagonal_balance=True
+    )
 
     mesh.refine_surface(topo_xyz, padding_cells_by_level=[0, 0, 3, 3], finalize=False)
 
@@ -152,6 +163,34 @@ def build_dc_ip_mesh_and_surveys():
     )
 
     mesh.refine_points(unique_locations, padding_cells_by_level=[4, 4, 4], finalize=False)
+
+    # Resolve the geological interfaces and the target explicitly. Without
+    # this refinement, deep cells alias the target geometry and IP responses
+    # do not converge even when the nominal base-cell size is reduced.
+    interface_half_width = 2.0 * dh
+    for interface_depth in (
+        BASE_LATERITE_THICKNESS,
+        BASE_LATERITE_THICKNESS + BASE_SAPROLITE_THICKNESS,
+    ):
+        mesh.refine_box(
+            [[-DOMAIN_WIDTH / 2.0, -interface_depth - interface_half_width]],
+            [[DOMAIN_WIDTH / 2.0, -interface_depth + interface_half_width]],
+            levels=mesh.max_level,
+            finalize=False,
+        )
+
+    mesh.refine_box(
+        [[
+            -100.0 - 2.0 * dh,
+            -240.0 - 2.0 * dh,
+        ]],
+        [[
+            100.0 + 2.0 * dh,
+            -50.0 + 2.0 * dh,
+        ]],
+        levels=mesh.max_level,
+        finalize=False,
+    )
     mesh.finalize()
 
     ind_active = active_from_xyz(mesh, topo_xyz)
@@ -167,7 +206,9 @@ def build_dc_ip_mesh_and_surveys():
 
 def run_dc_ip_variant(mesh, ind_active, active_map, eta_map, cc, dc_survey, ip_survey,
                       laterite_thickness, laterite_resistivity,
-                      target_top, target_width, target_height):
+                      target_top, target_width, target_height,
+                      target_resistivity=BASE_RHO_TARGET,
+                      include_target=True):
     sigma_active = conductivity_2d_variant(
         cc[:, 0], cc[:, 1],
         laterite_thickness=laterite_thickness,
@@ -175,6 +216,8 @@ def run_dc_ip_variant(mesh, ind_active, active_map, eta_map, cc, dc_survey, ip_s
         target_top=target_top,
         target_width=target_width,
         target_height=target_height,
+        target_resistivity=target_resistivity,
+        include_target=include_target,
     )
 
     sigma_map = active_map * maps.IdentityMap(nP=int(ind_active.sum()))
@@ -183,6 +226,7 @@ def run_dc_ip_variant(mesh, ind_active, active_map, eta_map, cc, dc_survey, ip_s
         mesh=mesh,
         survey=dc_survey,
         sigmaMap=sigma_map,
+        solver=get_default_solver(),
     )
 
     dc_pred = dc_sim.dpred(sigma_active)
@@ -193,6 +237,7 @@ def run_dc_ip_variant(mesh, ind_active, active_map, eta_map, cc, dc_survey, ip_s
         target_top=target_top,
         target_width=target_width,
         target_height=target_height,
+        include_target=include_target,
     )
 
     sigma_background = active_map * sigma_active
@@ -202,6 +247,7 @@ def run_dc_ip_variant(mesh, ind_active, active_map, eta_map, cc, dc_survey, ip_s
         survey=ip_survey,
         etaMap=eta_map,
         sigma=sigma_background,
+        solver=get_default_solver(),
     )
 
     ip_pred = ip_sim.dpred(eta_active)
@@ -214,7 +260,9 @@ def run_dc_ip_variant(mesh, ind_active, active_map, eta_map, cc, dc_survey, ip_s
 # -----------------------------------------------------------------------------
 
 def tdem_layers_variant(laterite_thickness, laterite_resistivity,
-                        target_top, target_height):
+                        target_top, target_height,
+                        target_resistivity=BASE_RHO_TARGET,
+                        include_target=True):
     """Build a simple 1D equivalent TDEM model.
 
     The 2D target is represented as a conductive layer. This is a simplification,
@@ -232,12 +280,16 @@ def tdem_layers_variant(laterite_thickness, laterite_resistivity,
     thicknesses.append(BASE_SAPROLITE_THICKNESS)
     resistivities.append(BASE_RHO_SAPROLITE)
 
+    if not include_target:
+        resistivities.append(BASE_RHO_BASEMENT)
+        return np.asarray(thicknesses, dtype=float), np.asarray(resistivities, dtype=float)
+
     if target_top > saprolite_base:
         thicknesses.append(target_top - saprolite_base)
         resistivities.append(BASE_RHO_BASEMENT)
 
     thicknesses.append(target_height)
-    resistivities.append(BASE_RHO_TARGET)
+    resistivities.append(float(target_resistivity))
 
     resistivities.append(BASE_RHO_BASEMENT)
 
@@ -245,8 +297,13 @@ def tdem_layers_variant(laterite_thickness, laterite_resistivity,
 
 
 def run_tdem_variant(laterite_thickness, laterite_resistivity,
-                     target_top, target_height):
-    times = np.logspace(-5, -2, 31)
+                     target_top, target_height,
+                     target_resistivity=BASE_RHO_TARGET,
+                     include_target=True,
+                     times=None):
+    if times is None:
+        times = np.logspace(-5, -2, 31)
+    times = np.asarray(times, dtype=float)
 
     receiver = tdem.receivers.PointMagneticFluxTimeDerivative(
         locations=np.array([[0.0, 0.0, 0.0]]),
@@ -269,6 +326,8 @@ def run_tdem_variant(laterite_thickness, laterite_resistivity,
         laterite_resistivity=laterite_resistivity,
         target_top=target_top,
         target_height=target_height,
+        target_resistivity=target_resistivity,
+        include_target=include_target,
     )
 
     sigmas = 1.0 / resistivities
@@ -321,7 +380,7 @@ def plot_tdem_transients(curves, title, filename):
         plt.loglog(times, response, "o-", lw=1.3, ms=4, label=label)
 
     plt.xlabel("Time (s)")
-    plt.ylabel("|dBz/dt| or constant-scaled |dHz/dt|")
+    plt.ylabel(r"$|dB_z/dt|$ (T/s)")
     plt.title(title)
     plt.grid(True, which="both", alpha=0.3)
     plt.legend()

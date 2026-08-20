@@ -7,8 +7,9 @@ documentclass: book
 classoption:
   - a4paper
   - 12pt
-mainfont: Times New Roman
-monofont: Courier New
+  - openany
+mainfont: DejaVu Serif
+monofont: DejaVu Sans Mono
 
 # Управление оглавлением
 toc: true                      # Включить оглавление (аналог --toc)
@@ -22,6 +23,6 @@ header-includes: |
   \renewcommand{\labelitemiv}{---}
   \usepackage{setspace}
   \onehalfspacing
-  \setmainfont{Times New Roman}
+  \setmainfont{DejaVu Serif}
   \usepackage{geometry} 
   \geometry{left=30mm, right=15mm, top=20mm, bottom=20mm}

@@ -1,0 +1,26 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit-and-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run unit tests
+        run: python -m pytest -q
+      - name: Run fast physical smoke tests
+        env:
+          MPLBACKEND: Agg
+        run: |
+          python scripts/plot_reference_model.py
+          python scripts/tdem_forward_1d.py
+          python scripts/tdem_parameter_recovery.py

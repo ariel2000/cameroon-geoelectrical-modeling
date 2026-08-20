@@ -1,0 +1,22 @@
+{
+  "model_scope": "1D laterally infinite conductive-layer equivalent",
+  "random_seed": 20260822,
+  "true_parameters": {
+    "top_depth_m": 95.0,
+    "thickness_m": 35.0,
+    "resistivity_ohm_m": 12.0
+  },
+  "estimated_parameters": {
+    "top_depth_m": 93.26743883781128,
+    "thickness_m": 38.97839267198681,
+    "resistivity_ohm_m": 13.26789456414869
+  },
+  "linearized_standard_errors": {
+    "top_depth_m": 1.7880604767995107,
+    "thickness_m": 5.127462861094123,
+    "resistivity_ohm_m": 1.6188725986171109
+  },
+  "normalized_rms": 1.1302034027061456,
+  "success": true,
+  "message": "`ftol` termination condition is satisfied."
+}

@@ -4,14 +4,24 @@ import matplotlib.pyplot as plt
 
 from simpeg import maps
 from simpeg.electromagnetics import time_domain as tdem
-from common_model import tdem_layered_model
+from common_model import (
+    OUTPUT_DIR,
+    TDEM_LOOP_RADIUS,
+    TDEM_CURRENT,
+    TDEM_TIME_MIN,
+    TDEM_TIME_MAX,
+    TDEM_TIME_CHANNELS,
+    tdem_layered_model,
+)
 
 # 1. Same laterite-saprolite-basement profile
 thicknesses, resistivities = tdem_layered_model()
 sigmas = 1.0 / resistivities
 
 # 2. Time channels
-times = np.logspace(-5, -2, 31)
+times = np.logspace(
+    np.log10(TDEM_TIME_MIN), np.log10(TDEM_TIME_MAX), TDEM_TIME_CHANNELS
+)
 
 # 3. Receiver and source
 receiver = tdem.receivers.PointMagneticFluxTimeDerivative(
@@ -24,8 +34,8 @@ waveform = tdem.sources.StepOffWaveform()
 source = tdem.sources.CircularLoop(
     receiver_list=[receiver],
     location=np.array([0.0, 0.0, 0.0]),
-    radius=50.0,
-    current=1.0,
+    radius=TDEM_LOOP_RADIUS,
+    current=TDEM_CURRENT,
     waveform=waveform,
 )
 survey = tdem.Survey([source])
@@ -44,9 +54,11 @@ dpred = simulation.dpred(m)
 plt.figure(figsize=(7, 5))
 plt.loglog(times, np.abs(dpred), "o-", lw=1.5)
 plt.xlabel("Time (s)")
-plt.ylabel("|dBz/dt|")
+plt.ylabel(r"$|dB_z/dt|$ (T/s)")
 plt.title("Synthetic TDEM transient response")
 plt.grid(True, which="both", alpha=0.3)
 plt.tight_layout()
-plt.savefig("outputs/tdem_transient.png", dpi=200)
-print("Saved outputs/tdem_transient.png")
+output = OUTPUT_DIR / "tdem_transient.png"
+plt.savefig(output, dpi=200)
+plt.close()
+print(f"Saved {output}")
