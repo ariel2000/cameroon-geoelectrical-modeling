@@ -21,5 +21,21 @@
   "model_width_m": 2000.0,
   "model_depth_m": 500.0,
   "surface_cell_size_m": 5.0,
-  "deep_cell_size_m": 20.0
+
+  "dcip_line_start_m": -400.0,
+  "dcip_line_end_m": 400.0,
+  "dcip_station_spacing_m": 20.0,
+  "dcip_receivers_per_source": 8,
+  "tdem_loop_radius_m": 50.0,
+  "tdem_current_a": 1.0,
+  "tdem_time_min_s": 1e-5,
+  "tdem_time_max_s": 1e-2,
+  "tdem_time_channels": 31,
+  "random_seed": 20260820,
+  "dc_relative_error": 0.03,
+  "dc_error_floor_ohm_m": 1.0,
+  "ip_relative_error": 0.05,
+  "ip_error_floor_v_v": 0.0001,
+  "tdem_relative_error": 0.05,
+  "tdem_error_floor_t_s": 1e-12
 }

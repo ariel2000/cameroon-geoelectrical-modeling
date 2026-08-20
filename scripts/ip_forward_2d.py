@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from discretize import TreeMesh
 from discretize.utils import active_from_xyz
 from simpeg import maps
+from simpeg.utils import get_default_solver
 from simpeg.electromagnetics.static import resistivity as dc
 from simpeg.electromagnetics.static import induced_polarization as ip
 from simpeg.electromagnetics.static.utils.static_utils import (
@@ -12,7 +13,23 @@ from simpeg.electromagnetics.static.utils.static_utils import (
     plot_pseudosection,
 )
 
-from common_model import DOMAIN_WIDTH, SURFACE_CELL_SIZE, conductivity_2d, chargeability_2d
+from common_model import (
+    DOMAIN_WIDTH,
+    SURFACE_CELL_SIZE,
+    OUTPUT_DIR,
+    DCIP_LINE_START,
+    DCIP_LINE_END,
+    DCIP_STATION_SPACING,
+    DCIP_RECEIVERS_PER_SOURCE,
+    LATERITE_THICKNESS,
+    SAPROLITE_THICKNESS,
+    TARGET_TOP,
+    TARGET_WIDTH,
+    TARGET_HEIGHT,
+    conductivity_2d,
+    chargeability_2d,
+    tree_mesh_shape,
+)
 
 # 1. Flat topography
 topo_x = np.linspace(-DOMAIN_WIDTH / 2, DOMAIN_WIDTH / 2, 401)
@@ -23,17 +40,18 @@ source_list = generate_dcip_sources_line(
     survey_type="dipole-dipole",
     data_type="volt",
     dimension_type="2D",
-    end_points=np.r_[-400.0, 400.0],
+    end_points=np.r_[DCIP_LINE_START, DCIP_LINE_END],
     topo=topo_xyz,
-    num_rx_per_src=8,
-    station_spacing=20.0,
+    num_rx_per_src=DCIP_RECEIVERS_PER_SOURCE,
+    station_spacing=DCIP_STATION_SPACING,
 )
 dc_survey = dc.survey.Survey(source_list)
 ip_survey = ip.survey.from_dc_to_ip_survey(dc_survey)
 
 # 3. Mesh
 dh = SURFACE_CELL_SIZE
-mesh = TreeMesh([[(dh, 256)], [(dh, 128)]], x0="CN")
+nx, nz = tree_mesh_shape(dh)
+mesh = TreeMesh([[(dh, nx)], [(dh, nz)]], x0="CN", diagonal_balance=True)
 mesh.refine_surface(topo_xyz, padding_cells_by_level=[0, 0, 3, 3], finalize=False)
 
 electrode_locations = np.c_[
@@ -41,6 +59,22 @@ electrode_locations = np.c_[
 ]
 unique_locations = np.unique(electrode_locations.reshape((4 * dc_survey.nD, 2)), axis=0)
 mesh.refine_points(unique_locations, padding_cells_by_level=[4, 4, 4], finalize=False)
+for interface_depth in (
+    LATERITE_THICKNESS,
+    LATERITE_THICKNESS + SAPROLITE_THICKNESS,
+):
+    mesh.refine_box(
+        [[-DOMAIN_WIDTH / 2.0, -interface_depth - 2.0 * dh]],
+        [[DOMAIN_WIDTH / 2.0, -interface_depth + 2.0 * dh]],
+        levels=mesh.max_level,
+        finalize=False,
+    )
+mesh.refine_box(
+    [[-TARGET_WIDTH / 2.0 - 2.0 * dh, -(TARGET_TOP + TARGET_HEIGHT) - 2.0 * dh]],
+    [[TARGET_WIDTH / 2.0 + 2.0 * dh, -TARGET_TOP + 2.0 * dh]],
+    levels=mesh.max_level,
+    finalize=False,
+)
 mesh.finalize()
 
 # 4. Active cells and models
@@ -60,6 +94,7 @@ simulation = ip.Simulation2DNodal(
     survey=ip_survey,
     etaMap=eta_map,
     sigma=sigma_background,
+    solver=get_default_solver(),
 )
 
 dpred = simulation.dpred(eta_active)
@@ -77,5 +112,7 @@ plot_pseudosection(
 )
 ax.set_title("Synthetic IP response")
 plt.tight_layout()
-plt.savefig("outputs/ip_pseudosection.png", dpi=200)
-print("Saved outputs/ip_pseudosection.png")
+output = OUTPUT_DIR / "ip_pseudosection.png"
+plt.savefig(output, dpi=200)
+plt.close()
+print(f"Saved {output}")

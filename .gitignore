@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+tmp/
+
+# Jupyter and editors
+.ipynb_checkpoints/
+.idea/
+.vscode/
+*.swp
+*.tmp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# LaTeX / Pandoc intermediates
+*.aux
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.toc
+*.lof
+*.lot
+*.out
+*.nav
+*.snm
+*.idx
+*.ilg
+*.ind
+*.synctex.gz
+*.synctex
+*.fls
+*.log
+*.fdb_latexmk
+*.latexmk
