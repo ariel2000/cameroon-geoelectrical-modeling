@@ -401,7 +401,7 @@ la chargeabilité dépasse le seuil de 0,016 V/V et la profondeur ne dépasse pa
 les 25 m de couverture documentée. La hauteur fixée à 85 m appartient au
 domaine publié de 45 à 150 m.
 
-## Cas particulier du réservoir pétrolier et gazier
+## Résumé des résultats du troisième axe
 
 Pour le scénario Rio del Rey, les valeurs vraies du toit, de l'épaisseur et de
 la résistivité sont 4 898 m, 34 m et 3,4 Ohm·m. Les estimations médianes sur
@@ -483,13 +483,121 @@ une égalité directe entre pseudosections synthétiques et profils de terrain.
 
 ![Erreurs de restitution des paramètres des deux modèles](outputs/dcip_parameter_recovery.png){ width=90% }
 
+# Chapitre 6. Cas particulier des zones pétrolières et gazières du Cameroun
+
+## Justification de ce troisième axe
+
+Les zones pétrolières et gazières constituent un cas particulier dans cette
+étude, car leurs profondeurs, leurs géométries et leurs conditions
+d'investigation diffèrent fortement de celles des minéralisations superficielles.
+Les cibles aurifère et ferrifère sont étudiées depuis la surface par DC/ERT et
+IP, tandis que les réservoirs documentés des bassins de Rio del Rey et de
+Douala se trouvent à des profondeurs pouvant atteindre plusieurs kilomètres.
+Une transposition directe de la même configuration électrique de surface ne
+serait donc pas physiquement défendable.
+
+Le troisième axe évalue plutôt le potentiel de la résistivité électrique
+mesurée en forage pour estimer les paramètres d'un réservoir camerounais. Il
+reste conforme à la question générale du mémoire : partir d'un modèle aux
+paramètres connus, produire des observations synthétiques bruitées, restituer
+ces paramètres et comparer les estimations aux résultats publiés sur le
+terrain.
+
+## Analogue camerounais et paramètres de référence
+
+Le modèle est construit à partir du réservoir gréseux argileux R4 du bassin de
+Rio del Rey décrit par Kissaaka et al. (2021), puis contrôlé par les domaines
+publiés par Domra Kana et al. (2021) et Chongwain et al. (2019). Le scénario
+retient un toit à 4 898 m de profondeur mesurée, une épaisseur de 34 m, une
+résistivité de formation de 3,4 Ohm·m, une porosité effective de 0,25 et un
+volume d'argile de 0,43.
+
+| Grandeur du modèle | Valeur vraie | Domaine camerounais utilisé | Source principale |
+|---|---:|---:|---|
+| Profondeur du toit | 4 898 m MD | intervalle R4 : 4 898-4 932 m MD | Kissaaka et al. (2021) |
+| Épaisseur | 34 m | 10-43,8 m à Rio del Rey ; 6,2-78,7 m à Douala | Domra Kana et al. (2021) ; Chongwain et al. (2019) |
+| Résistivité profonde | 3,4 Ohm·m | 3,4 Ohm·m pour R4 | Kissaaka et al. (2021) |
+| Porosité effective | 0,25 | 0,15-0,34 | Domra Kana et al. (2021) |
+| Saturation en eau | 0,349 | 0,03-0,63 | Domra Kana et al. (2021) |
+
+Ces valeurs décrivent un analogue synthétique contrôlé. Elles ne représentent
+pas une généralisation de tous les champs pétroliers camerounais et ne sont pas
+présentées comme de nouvelles mesures de puits.
+
+## Modélisation de la diagraphie et estimation
+
+Le profil synthétique couvre 4 850-4 980 m avec un échantillonnage vertical de
+0,5 m. La formation encaissante est fixée à 1,1 Ohm·m et le réservoir à
+3,4 Ohm·m. Un bruit gaussien de 3 %, complété par un plancher de
+0,02 Ohm·m, est ajouté à chaque réalisation. La profondeur du toit,
+l'épaisseur et la résistivité sont recherchées conjointement dans une
+bibliothèque de réponses qui ne contient pas les valeurs vraies exactes. Ce
+choix limite le biais numérique qui résulterait d'une vérité placée directement
+sur un noeud de la grille de recherche.
+
+La saturation en eau est ensuite calculée par la relation simplifiée de
+Simandoux :
+
+$$
+\frac{1}{R_t}=\frac{\phi^m S_w^2}{aR_w}+\frac{V_{sh}S_w}{R_{sh}}.
+$$
+
+Le calcul adopte $a=1$, $m=n=2$, $R_w=0,045$ Ohm·m et
+$R_{sh}=1,2$ Ohm·m. La porosité, le volume d'argile et les résistivités de
+l'eau et des schistes sont fixés. Par conséquent, la saturation obtenue est
+une estimation conditionnelle et non une mesure indépendante de la nature du
+fluide.
+
+## Résultats du cas pétrolier et gazier
+
+Les vingt réalisations bruitées donnent les estimations médianes suivantes :
+
+| Paramètre | Valeur vraie | Estimation médiane | Erreur de restitution |
+|---|---:|---:|---:|
+| Toit du réservoir | 4 898 m MD | 4 900 m MD | +2 m |
+| Épaisseur | 34 m | 32 m | -5,9 % |
+| Résistivité | 3,4 Ohm·m | 3,5 Ohm·m | +2,9 % |
+| Saturation en eau | 0,349 | 0,343 | -1,8 % |
+
 ![Estimation des paramètres du réservoir pétrolier et gazier de Rio del Rey](outputs/petroleum_parameter_recovery.png){ width=90% }
+
+La profondeur du toit est restituée à 2 m près. Les erreurs sur l'épaisseur,
+la résistivité et la saturation en eau restent inférieures à 6 % et toutes les
+estimations appartiennent aux domaines camerounais retenus. Cette précision est
+liée au caractère local de la mesure en forage ; elle ne doit pas être comparée
+directement à la résolution verticale d'une acquisition électrique de surface.
+
+## Portée et limites de l'interprétation
+
+Ce troisième axe montre que la diagraphie de résistivité peut contraindre les
+limites du réservoir, son épaisseur et sa résistivité, puis fournir une
+estimation pétrophysique de la saturation lorsque les autres paramètres du
+modèle sont connus. Il ne démontre toutefois pas que la résistivité identifie
+directement le pétrole ou le gaz. Des valeurs similaires peuvent résulter de
+variations de salinité, d'argilosité, de porosité, de saturation ou de
+connectivité des pores.
+
+La distinction entre pétrole, gaz et eau doit donc intégrer d'autres
+informations : diagraphies gamma ray et neutron-densité, données acoustiques,
+sismique, essais de formation ou analyses de fluides. Une extension future
+pourrait également étudier l'architecture du bassin par MT/AMT ou la réponse
+d'un réservoir offshore par CSEM, à condition de disposer d'une géométrie et
+de contraintes pétrophysiques suffisamment documentées.
+
+## Conclusion du troisième axe
+
+Pour le modèle de Rio del Rey étudié, la méthode électrique possède un
+potentiel quantifiable pour l'estimation géométrique et pétrophysique du
+réservoir. Ce résultat complète les deux axes miniers sans les remplacer : le
+choix de la méthode dépend de la profondeur, de la géométrie et du contraste
+électrique du type de gisement considéré.
 
 # Conclusion générale
 
-Ce travail évalue le potentiel de DC/ERT et IP pour déterminer les paramètres
-de deux modèles miniers typiques et traite, comme cas particulier, un réservoir
-pétrolier et gazier par diagraphie de résistivité. Les modèles ne
+Ce travail intègre trois axes cohérents : l'estimation par DC/ERT et IP des
+paramètres d'une zone aurifère sulfurée, l'estimation par les mêmes méthodes
+d'un canal de minéralisation ferrifère et, comme cas particulier, l'étude d'un
+réservoir pétrolier et gazier par diagraphie de résistivité. Les modèles ne
 sont pas arbitraires : leurs propriétés électriques, leurs profondeurs et
 leurs échelles sont contraintes par les résultats documentés à Nko'ongop,
 Bindiba, Yassa et Messondo.
