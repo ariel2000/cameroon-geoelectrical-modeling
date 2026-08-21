@@ -113,7 +113,6 @@ python scripts/run_all.py
 ## Готовые материалы
 
 - `report.pdf` — полный текст исследования на русском языке;
-- `output/pdf/memoire_corrige_francais.pdf` — полная версия на французском языке;
 - `report.md` и `report_fr.md` — редактируемые исходные тексты;
 - `outputs/field_comparison.csv` — единая проверка трёх осей по камерунским
   полевым и скважинным аналогам;
