@@ -22,17 +22,20 @@ SCRIPTS = [
     "plot_reference_model.py",
     "dc_forward_2d.py",
     "ip_forward_2d.py",
-    "tdem_forward_1d.py",
     "mesh_convergence.py",
     "sensitivity_analysis.py",
-    "detectability_analysis.py",
     "dcip_parameter_recovery.py",
-    "tdem_parameter_recovery.py",
+    "petroleum_parameter_recovery.py",
+    "compare_with_field.py",
 ]
 
 
 def write_metadata():
-    parameter_bytes = (ROOT / "scripts" / "model_parameters.json").read_bytes()
+    parameter_files = [
+        ROOT / "scripts" / "model_parameters.json",
+        ROOT / "scripts" / "model_scenarios.json",
+        ROOT / "scripts" / "petroleum_scenario.json",
+    ]
     metadata = {
         "python": platform.python_version(),
         "platform": platform.platform(),
@@ -41,7 +44,10 @@ def write_metadata():
         "matplotlib": matplotlib.__version__,
         "discretize": discretize.__version__,
         "simpeg": simpeg.__version__,
-        "parameter_file_sha256": hashlib.sha256(parameter_bytes).hexdigest(),
+        "parameter_files_sha256": {
+            path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in parameter_files
+        },
         "scripts": SCRIPTS,
     }
     output = ROOT / "outputs" / "run_metadata.json"

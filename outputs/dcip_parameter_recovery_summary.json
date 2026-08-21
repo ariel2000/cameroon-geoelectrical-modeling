@@ -1,0 +1,85 @@
+{
+  "gold_sulphide": {
+    "label": "Bindiba-type gold-associated sulphide zone",
+    "field_sites": [
+      "Bindiba",
+      "Yassa"
+    ],
+    "conditional_parameters": {
+      "top_depth_m": {
+        "true": 15.0,
+        "median_estimate": 20.0,
+        "p10_estimate": 20.0,
+        "p90_estimate": 20.0,
+        "median_relative_error_percent": 33.333333333333336,
+        "exact_grid_recovery_fraction": 0.0
+      },
+      "width_m": {
+        "true": 75.0,
+        "median_estimate": 80.0,
+        "p10_estimate": 80.0,
+        "p90_estimate": 80.0,
+        "median_relative_error_percent": 6.666666666666667,
+        "exact_grid_recovery_fraction": 0.0
+      },
+      "resistivity_ohm_m": {
+        "true": 550.0,
+        "median_estimate": 600.0,
+        "p10_estimate": 600.0,
+        "p90_estimate": 600.0,
+        "median_relative_error_percent": 9.090909090909092,
+        "exact_grid_recovery_fraction": 0.0
+      },
+      "chargeability_v_v": {
+        "true": 0.047,
+        "median_estimate": 0.05,
+        "p10_estimate": 0.05,
+        "p90_estimate": 0.05,
+        "median_relative_error_percent": 6.3829787234042605,
+        "exact_grid_recovery_fraction": 0.0
+      }
+    },
+    "number_of_noise_realizations": 20
+  },
+  "iron_channel": {
+    "label": "Messondo-type iron-mineralization channel",
+    "field_sites": [
+      "Messondo"
+    ],
+    "conditional_parameters": {
+      "top_depth_m": {
+        "true": 10.0,
+        "median_estimate": 15.0,
+        "p10_estimate": 15.0,
+        "p90_estimate": 15.0,
+        "median_relative_error_percent": 50.0,
+        "exact_grid_recovery_fraction": 0.0
+      },
+      "width_m": {
+        "true": 140.0,
+        "median_estimate": 150.0,
+        "p10_estimate": 150.0,
+        "p90_estimate": 150.0,
+        "median_relative_error_percent": 7.142857142857143,
+        "exact_grid_recovery_fraction": 0.0
+      },
+      "resistivity_ohm_m": {
+        "true": 1650.0,
+        "median_estimate": 1500.0,
+        "p10_estimate": 1500.0,
+        "p90_estimate": 1500.0,
+        "median_relative_error_percent": -9.090909090909092,
+        "exact_grid_recovery_fraction": 0.0
+      },
+      "chargeability_v_v": {
+        "true": 0.02,
+        "median_estimate": 0.018,
+        "p10_estimate": 0.018,
+        "p90_estimate": 0.018,
+        "median_relative_error_percent": -10.000000000000009,
+        "exact_grid_recovery_fraction": 0.0
+      }
+    },
+    "number_of_noise_realizations": 20
+  }
+}

@@ -4,8 +4,8 @@ from scripts import common_model as model
 
 
 def test_surface_and_depth_convention():
-    x = np.array([0.0, 0.0, 0.0, 0.0])
-    z = np.array([-1.0, -20.0, -60.0, -110.0])
+    x = np.array([500.0, 500.0, 500.0, 0.0])
+    z = np.array([-1.0, -10.0, -60.0, -20.0])
     sigma = model.conductivity_2d(x, z)
     expected = np.array([
         model.SIGMA_LATERITE,

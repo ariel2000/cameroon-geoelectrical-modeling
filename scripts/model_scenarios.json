@@ -1,0 +1,20 @@
+{
+  "gold_sulphide": {
+    "label": "Bindiba-type gold-associated sulphide zone",
+    "field_sites": ["Bindiba", "Yassa"],
+    "target_top_depth_m": 15.0,
+    "target_width_m": 75.0,
+    "target_height_m": 30.0,
+    "target_resistivity_ohm_m": 550.0,
+    "target_chargeability": 0.047
+  },
+  "iron_channel": {
+    "label": "Messondo-type iron-mineralization channel",
+    "field_sites": ["Messondo"],
+    "target_top_depth_m": 10.0,
+    "target_width_m": 140.0,
+    "target_height_m": 85.0,
+    "target_resistivity_ohm_m": 1650.0,
+    "target_chargeability": 0.020
+  }
+}

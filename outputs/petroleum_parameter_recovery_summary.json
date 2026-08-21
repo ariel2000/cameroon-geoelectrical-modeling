@@ -1,0 +1,46 @@
+{
+  "label": "Rio-del-Rey-type oil and gas sandstone reservoir",
+  "field_sites": [
+    "RioDelRey",
+    "Douala"
+  ],
+  "method": "deep_resistivity_log_and_Simandoux",
+  "conditional_parameters": {
+    "top_depth_m": {
+      "true": 4898.0,
+      "median_estimate": 4900.0,
+      "p10_estimate": 4900.0,
+      "p90_estimate": 4900.0,
+      "median_relative_error_percent": 0.04083299305839118,
+      "median_absolute_error_m": 2.0
+    },
+    "thickness_m": {
+      "true": 34.0,
+      "median_estimate": 32.0,
+      "p10_estimate": 32.0,
+      "p90_estimate": 32.0,
+      "median_relative_error_percent": -5.882352941176471
+    },
+    "resistivity_ohm_m": {
+      "true": 3.4,
+      "median_estimate": 3.5,
+      "p10_estimate": 3.5,
+      "p90_estimate": 3.5,
+      "median_relative_error_percent": 2.941176470588238
+    },
+    "water_saturation": {
+      "true": 0.34891809537027674,
+      "median_estimate": 0.34254563481627703,
+      "p10_estimate": 0.34254563481627703,
+      "p90_estimate": 0.34254563481627703,
+      "median_relative_error_percent": -1.8263485438429783
+    }
+  },
+  "fixed_parameters": {
+    "effective_porosity": 0.25,
+    "shale_volume": 0.43,
+    "formation_water_resistivity_ohm_m": 0.045
+  },
+  "number_of_noise_realizations": 20,
+  "interpretive_limit": "resistivity alone does not distinguish oil from gas"
+}

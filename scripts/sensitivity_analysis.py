@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 """
-Sensitivity analysis for DC, IP and TDEM synthetic responses.
+Sensitivity analysis for the primary DC and IP parameter-estimation workflow.
 
 This script is intended for Chapter 4 of the report:
 - influence of the near-surface layer thickness;
@@ -16,10 +16,8 @@ Important physical convention:
 - depths are represented by negative z values in the 2D DC/IP model;
 - for TDEM, the receiver and transmitter are placed at h = 0 m.
 
-For the TDEM simulation, SimPEG returns the magnetic flux time derivative
-for the chosen receiver. In a non-magnetic medium, mu = mu0 is constant,
-therefore dB/dt = mu0 dH/dt. The shape of the transient curve is not changed
-by this constant factor.
+The TDEM helper functions below are retained only for reproducibility of the
+earlier exploratory scripts. They are not executed by this primary analysis.
 """
 
 import json
@@ -110,6 +108,7 @@ def conductivity_2d_variant(x, z, laterite_thickness, laterite_resistivity,
 
 
 def chargeability_2d_variant(x, z, target_top, target_width, target_height,
+                             target_chargeability=BASE_CHARGEABILITY,
                              include_target=True):
     eta = np.zeros_like(x, dtype=float)
 
@@ -120,7 +119,7 @@ def chargeability_2d_variant(x, z, target_top, target_width, target_height,
 
     target = (x >= x1) & (x <= x2) & (z <= z1) & (z >= z2)
     if include_target:
-        eta[target] = BASE_CHARGEABILITY
+        eta[target] = float(target_chargeability)
 
     return eta
 
@@ -180,14 +179,8 @@ def build_dc_ip_mesh_and_surveys(cell_size=SURFACE_CELL_SIZE):
         )
 
     mesh.refine_box(
-        [[
-            -100.0 - 2.0 * dh,
-            -240.0 - 2.0 * dh,
-        ]],
-        [[
-            100.0 + 2.0 * dh,
-            -50.0 + 2.0 * dh,
-        ]],
+        [[-220.0 - 2.0 * dh, -220.0 - 2.0 * dh]],
+        [[220.0 + 2.0 * dh, 0.0]],
         levels=mesh.max_level,
         finalize=False,
     )
@@ -208,6 +201,7 @@ def run_dc_ip_variant(mesh, ind_active, active_map, eta_map, cc, dc_survey, ip_s
                       laterite_thickness, laterite_resistivity,
                       target_top, target_width, target_height,
                       target_resistivity=BASE_RHO_TARGET,
+                      target_chargeability=BASE_CHARGEABILITY,
                       include_target=True):
     sigma_active = conductivity_2d_variant(
         cc[:, 0], cc[:, 1],
@@ -237,6 +231,7 @@ def run_dc_ip_variant(mesh, ind_active, active_map, eta_map, cc, dc_survey, ip_s
         target_top=target_top,
         target_width=target_width,
         target_height=target_height,
+        target_chargeability=target_chargeability,
         include_target=include_target,
     )
 
@@ -358,12 +353,10 @@ def relative_rms_change(reference, variant):
     return 100.0 * np.sqrt(np.mean((variant - reference) ** 2)) / denominator
 
 
-def plot_sensitivity_curve(values, dc_scores, ip_scores, tdem_scores,
-                           xlabel, title, filename):
+def plot_sensitivity_curve(values, dc_scores, ip_scores, xlabel, title, filename):
     plt.figure(figsize=(8, 5))
     plt.plot(values, dc_scores, "o-", label="DC apparent resistivity")
     plt.plot(values, ip_scores, "s-", label="IP response")
-    plt.plot(values, tdem_scores, "^-", label="TDEM transient")
     plt.xlabel(xlabel)
     plt.ylabel("Relative RMS change (%)")
     plt.title(title)
@@ -407,38 +400,31 @@ def main():
         **base_params,
     )
 
-    base_times, base_tdem = run_tdem_variant(
-        laterite_thickness=BASE_LATERITE_THICKNESS,
-        laterite_resistivity=BASE_RHO_LATERITE,
-        target_top=BASE_TARGET_TOP,
-        target_height=BASE_TARGET_HEIGHT,
-    )
-
     experiments = [
         {
             "name": "laterite_thickness",
-            "values": np.array([5.0, 10.0, 15.0, 20.0, 30.0]),
+            "values": np.array([2.5, 5.0, 7.5]),
             "xlabel": "Laterite thickness (m)",
             "title": "Sensitivity to near-surface layer thickness",
             "filename": "sensitivity_laterite_thickness.png",
         },
         {
             "name": "laterite_resistivity",
-            "values": np.array([40.0, 80.0, 150.0, 300.0]),
+            "values": np.array([2100.0, 3000.0, 4200.0]),
             "xlabel": "Laterite resistivity (Ohm m)",
             "title": "Sensitivity to near-surface layer resistivity",
             "filename": "sensitivity_laterite_resistivity.png",
         },
         {
             "name": "target_top",
-            "values": np.array([60.0, 80.0, 100.0, 140.0, 180.0]),
+            "values": np.array([10.0, 15.0, 20.0, 25.0, 30.0]),
             "xlabel": "Target top depth (m)",
             "title": "Sensitivity to target depth",
             "filename": "sensitivity_target_depth.png",
         },
         {
             "name": "target_width",
-            "values": np.array([40.0, 80.0, 120.0, 160.0]),
+            "values": np.array([50.0, 75.0, 100.0, 150.0]),
             "xlabel": "Target width (m)",
             "title": "Sensitivity to target width",
             "filename": "sensitivity_target_width.png",
@@ -446,12 +432,9 @@ def main():
     ]
 
     summary_rows = []
-    tdem_depth_curves = []
-
     for exp in experiments:
         dc_scores = []
         ip_scores = []
-        tdem_scores = []
 
         for value in exp["values"]:
             params = dict(base_params)
@@ -465,56 +448,26 @@ def main():
             dc_score = relative_rms_change(base_dc, dc_data)
             ip_score = relative_rms_change(base_ip, ip_data)
 
-            if exp["name"] == "target_width":
-                # A 1D TDEM model cannot represent target width.
-                # Therefore, target-width sensitivity is not applicable to TDEM.
-                tdem_score = np.nan
-            else:
-                times, tdem_data = run_tdem_variant(
-                    laterite_thickness=params["laterite_thickness"],
-                    laterite_resistivity=params["laterite_resistivity"],
-                    target_top=params["target_top"],
-                    target_height=params["target_height"],
-                )
-                tdem_score = relative_rms_change(base_tdem, tdem_data)
-
-                if exp["name"] == "target_top":
-                    tdem_depth_curves.append(
-                        (f"Target top = {int(value)} m", times, tdem_data)
-                    )
-
             dc_scores.append(dc_score)
             ip_scores.append(ip_score)
-            tdem_scores.append(tdem_score)
 
-            summary_rows.append(
-                [exp["name"], float(value), dc_score, ip_score, tdem_score]
-            )
+            summary_rows.append([exp["name"], float(value), dc_score, ip_score])
 
         plot_sensitivity_curve(
             exp["values"],
             dc_scores,
             ip_scores,
-            tdem_scores,
             xlabel=exp["xlabel"],
             title=exp["title"],
             filename=exp["filename"],
         )
 
-    # Additional TDEM figure for Chapter 4: transient curves for different target depths.
-    if tdem_depth_curves:
-        plot_tdem_transients(
-            tdem_depth_curves,
-            "TDEM transient response for different target depths",
-            "tdem_target_depth_comparison.png",
-        )
-
     summary_path = OUT / "sensitivity_summary.csv"
     with open(summary_path, "w", encoding="utf-8") as f:
-        f.write("parameter,value,dc_relative_rms_percent,ip_relative_rms_percent,tdem_relative_rms_percent\n")
+        f.write("parameter,value,dc_relative_rms_percent,ip_relative_rms_percent\n")
         for row in summary_rows:
             f.write(
-                f"{row[0]},{row[1]:.6g},{row[2]:.6g},{row[3]:.6g},{row[4]:.6g}\n"
+                f"{row[0]},{row[1]:.6g},{row[2]:.6g},{row[3]:.6g}\n"
             )
 
     print("Sensitivity analysis completed.")
