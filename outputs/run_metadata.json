@@ -6,16 +6,19 @@
   "matplotlib": "3.11.1",
   "discretize": "0.12.0",
   "simpeg": "0.25.2",
-  "parameter_file_sha256": "d8cbcde8784324036b56a3adfefb0448bd243d5aaa166665e299d6f3dd8e4cda",
+  "parameter_files_sha256": {
+    "model_parameters.json": "56dcdc66dd84df3108604b33fab109ff2790322191ca6fd8239ca1464732789b",
+    "model_scenarios.json": "13231dce6c62d1482c869bbf275f42be34c2f8463a9dd13bc165cd4d71b3bdcb",
+    "petroleum_scenario.json": "10520951f76d8a146e7dded3e3a4aa19096203491487324f1b52b735f1309968"
+  },
   "scripts": [
     "plot_reference_model.py",
     "dc_forward_2d.py",
     "ip_forward_2d.py",
-    "tdem_forward_1d.py",
     "mesh_convergence.py",
     "sensitivity_analysis.py",
-    "detectability_analysis.py",
     "dcip_parameter_recovery.py",
-    "tdem_parameter_recovery.py"
+    "petroleum_parameter_recovery.py",
+    "compare_with_field.py"
   ]
 }

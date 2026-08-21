@@ -1,0 +1,12 @@
+scenario,site,parameter,estimation_status,synthetic_true_value,median_estimated_value,relative_error_percent,field_lower_bound,field_upper_bound,unit,field_role,estimate_consistent_with_field,source
+gold_sulphide,Bindiba,target_top_depth,estimated,15.0,20.0,33.333333333333336,10,20,m,validation_interval,True,Ledoux_et_al_2025
+gold_sulphide,Bindiba,target_resistivity,estimated,550.0,600.0,9.090909090909092,0,900,ohm_m,validation_threshold,True,Ledoux_et_al_2025
+gold_sulphide,Bindiba,target_chargeability,estimated,0.047,0.05,6.3829787234042605,0.030,0.0671,V_per_V,validation_interval,True,Ledoux_et_al_2025
+iron_channel,Messondo,target_resistivity,estimated,1650.0,1500.0,-9.090909090909092,510,3000,ohm_m,validation_interval,True,Ndougsa_Mbarga_et_al_2014
+iron_channel,Messondo,target_chargeability,estimated,0.02,0.018,-10.000000000000009,0.016,,V_per_V,validation_threshold,True,Ndougsa_Mbarga_et_al_2014
+iron_channel,Messondo,overburden_thickness,estimated,10.0,15.0,50.0,0,25,m,geometry_constraint,True,Ndougsa_Mbarga_et_al_2014
+iron_channel,Messondo,mineralized_thickness,fixed,85.0,85.0,0.0,45,150,m,geometry_constraint,True,Ndougsa_Mbarga_et_al_2014
+petroleum_gas_reservoir,RioDelRey,reservoir_top_depth,estimated,4898.0,4900.0,0.04083299305839118,4898,4932,m,validation_interval,True,Kissaaka_et_al_2021
+petroleum_gas_reservoir,RioDelRey,reservoir_thickness,estimated,34.0,32.0,-5.882352941176471,10,43.8,m,validation_interval,True,Domra_Kana_et_al_2021
+petroleum_gas_reservoir,RioDelRey,formation_resistivity,estimated,3.4,3.5,2.941176470588238,3.4,3.4,ohm_m,reference_value,True,Kissaaka_et_al_2021
+petroleum_gas_reservoir,RioDelRey,water_saturation,estimated,0.34891809537027674,0.34254563481627703,-1.8263485438429783,0.03,0.63,fraction,validation_interval,True,Domra_Kana_et_al_2021

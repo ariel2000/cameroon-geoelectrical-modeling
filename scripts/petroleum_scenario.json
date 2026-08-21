@@ -1,0 +1,20 @@
+{
+  "label": "Rio-del-Rey-type oil and gas sandstone reservoir",
+  "field_sites": ["RioDelRey", "Douala"],
+  "reservoir_top_depth_m": 4898.0,
+  "reservoir_thickness_m": 34.0,
+  "formation_resistivity_ohm_m": 3.4,
+  "background_resistivity_ohm_m": 1.1,
+  "effective_porosity": 0.25,
+  "shale_volume": 0.43,
+  "formation_water_resistivity_ohm_m": 0.045,
+  "shale_resistivity_ohm_m": 1.2,
+  "archie_a": 1.0,
+  "archie_m": 2.0,
+  "saturation_exponent_n": 2.0,
+  "log_depth_start_m": 4850.0,
+  "log_depth_end_m": 4980.0,
+  "log_sample_interval_m": 0.5,
+  "relative_noise": 0.03,
+  "absolute_noise_floor_ohm_m": 0.02
+}

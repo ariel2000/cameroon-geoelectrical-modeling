@@ -1,0 +1,26 @@
+site,deposit_model,parameter,lower_bound,upper_bound,unit,role,source
+Nkoongop,lateritic weathering profile,ferruginous_horizon_resistivity,2100,4200,ohm_m,background_constraint,Robain_et_al_1996
+Nkoongop,lateritic weathering profile,saprolite_resistivity,820,1600,ohm_m,background_constraint,Robain_et_al_1996
+Nkoongop,lateritic weathering profile,saturated_saprolite_resistivity,160,220,ohm_m,background_constraint,Robain_et_al_1996
+Nkoongop,lateritic weathering profile,acid_bedrock_resistivity,6100,8700,ohm_m,background_constraint,Robain_et_al_1996
+Nkoongop,lateritic weathering profile,ferruginous_horizon_thickness,0,3,m,background_constraint,Robain_et_al_1996
+Nkoongop,lateritic weathering profile,combined_surface_cover_thickness,1,7,m,derived_background_constraint,Robain_et_al_1996
+Nkoongop,lateritic weathering profile,saprolite_thickness,1,50,m,background_constraint,Robain_et_al_1996
+Bindiba,gold-associated sulphide zone,target_top_depth,10,20,m,validation_interval,Ledoux_et_al_2025
+Bindiba,gold-associated sulphide zone,target_resistivity,0,900,ohm_m,validation_threshold,Ledoux_et_al_2025
+Bindiba,gold-associated sulphide zone,target_chargeability,0.030,0.0671,V_per_V,validation_interval,Ledoux_et_al_2025
+Yassa,gold-associated sulphide zone,target_top_depth,10,25,m,validation_interval,Embeng_et_al_2022
+Yassa,gold-associated sulphide zone,target_resistivity,0,60,ohm_m,alternative_conductive_endmember,Embeng_et_al_2022
+Yassa,gold-associated sulphide zone,target_chargeability,0.030,,V_per_V,validation_threshold,Embeng_et_al_2022
+Messondo,iron-mineralization channel,target_resistivity,510,3000,ohm_m,validation_interval,Ndougsa_Mbarga_et_al_2014
+Messondo,iron-mineralization channel,target_chargeability,0.016,,V_per_V,validation_threshold,Ndougsa_Mbarga_et_al_2014
+Messondo,iron-mineralization channel,overburden_thickness,0,25,m,geometry_constraint,Ndougsa_Mbarga_et_al_2014
+Messondo,iron-mineralization channel,mineralized_thickness,45,150,m,geometry_constraint,Ndougsa_Mbarga_et_al_2014
+RioDelRey,oil and gas sandstone reservoir,reservoir_top_depth,4898,4932,m,validation_interval,Kissaaka_et_al_2021
+RioDelRey,oil and gas sandstone reservoir,reservoir_thickness,10,43.8,m,validation_interval,Domra_Kana_et_al_2021
+RioDelRey,oil and gas sandstone reservoir,formation_resistivity,3.4,3.4,ohm_m,reference_value,Kissaaka_et_al_2021
+RioDelRey,oil and gas sandstone reservoir,effective_porosity,0.15,0.34,fraction,validation_interval,Domra_Kana_et_al_2021
+RioDelRey,oil and gas sandstone reservoir,water_saturation,0.03,0.63,fraction,validation_interval,Domra_Kana_et_al_2021
+Douala,oil and gas sandstone reservoir,reservoir_thickness,6.2,78.7,m,validation_interval,Chongwain_et_al_2019
+Douala,oil and gas sandstone reservoir,hydrocarbon_saturation,0.692,0.817,fraction,comparison_interval,Chongwain_et_al_2019
+Douala,oil and gas sandstone reservoir,deep_resistivity_threshold,4,,ohm_m,contextual_threshold,Chongwain_et_al_2019

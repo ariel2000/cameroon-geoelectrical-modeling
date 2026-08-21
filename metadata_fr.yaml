@@ -1,0 +1,33 @@
+title: "Étude du potentiel des méthodes géoélectriques pour l'estimation des paramètres de modèles géologiques typiques des gisements camerounais à partir de données synthétiques, avec examen du cas particulier des zones pétrolières et gazières"
+author: "Bounou Guimking Ariel"
+date: \today
+lang: fr-FR
+documentclass: book
+classoption:
+  - a4paper
+  - 12pt
+  - openany
+mainfont: DejaVu Serif
+monofont: DejaVu Sans Mono
+toc: true
+toc-depth: 2
+toc-title: "Table des matières"
+colorlinks: true
+linkcolor: black
+urlcolor: blue
+header-includes: |
+  \let\cleardoublepage\clearpage
+  \renewcommand{\labelitemi}{---}
+  \renewcommand{\labelitemii}{---}
+  \usepackage{setspace}
+  \onehalfspacing
+  \setmainfont{DejaVu Serif}
+  \usepackage{geometry}
+  \geometry{left=30mm, right=15mm, top=20mm, bottom=20mm}
+  \usepackage{float}
+  \usepackage{fancyhdr}
+  \pagestyle{fancy}
+  \fancyhf{}
+  \fancyhead[L]{\nouppercase{\leftmark}}
+  \fancyhead[R]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
